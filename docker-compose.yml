@@ -1,0 +1,31 @@
+services:
+  hypervisor-app:
+    build: .
+    image: rishabh_pallod/hypervisor-app:latest
+    container_name: hypervisor_app
+    ports:
+      - "8000:8000"  # Hypervisor service will be accessible on port 8000
+    environment:
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_ALGORITHM=${JWT_ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DATABASE_INDEX=${REDIS_DATABASE_INDEX}
+    depends_on:
+      - redis
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7.0.9
+    container_name: redis_service
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
